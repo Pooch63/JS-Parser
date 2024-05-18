@@ -3,13 +3,17 @@ const keywords = {
   const: 0,
   do: 0,
   else: 0,
+  false: 0,
   for: 0,
   function: 0,
   if: 0,
   let: 0,
+  null: 0,
   return: 0,
   static: 0,
   switch: 0,
+  true: 0,
+  undefined: 0,
   var: 0,
   while: 0,
 };
@@ -23,6 +27,7 @@ const symbols = {
   "=": "equals",
   ";": "semicolon",
   ",": "comma",
+  ".": "dot",
 
   "+": "plus",
   "-": "minus",
@@ -88,9 +93,7 @@ export function lex(source) {
         ind += 1;
       }
 
-      if (identifier == "true" || identifier == "false") {
-        tokens.push({ type: "bool", value: identifier == "true" });
-      } else if (keywords[identifier] != null) {
+      if (keywords[identifier] != null) {
         tokens.push({ type: identifier, value: identifier });
       } else tokens.push({ type: "identifier", value: identifier });
 
