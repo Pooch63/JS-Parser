@@ -130,13 +130,13 @@ class Parser {
       case "if":
         return this.parse_if_else_block();
       case "function":
-        return this.parse_function();
+        return this.parse_function(false);
       case "return":
         return this.parse_return();
       case "do":
         return this.parse_do_while();
       case "class":
-        return this.parse_class();
+        return this.parse_class(false);
 
       default:
         return this.parse_expression();
@@ -364,13 +364,19 @@ class Parser {
     }
     return args;
   }
-  parse_function() {
+  parse_function(accept_anonymous) {
     this.expect("function");
 
     let name;
     if (this.current_token().type == "identifier") {
       name = this.next_token().value;
-    } else name = "<anonymous>";
+    } else {
+      //Throw an error because we weren't accepting anonymous class
+      if (!accept_anonymous) {
+        throw new Error(`Unexpected token ${parser.current_token().value}`);
+      }
+      name = "<anonymous>";
+    }
 
     this.expect("lparen");
     let args = this.parse_function_args();
@@ -384,13 +390,19 @@ class Parser {
     this.next_token();
     return new nodes.Return(this.parse_expression());
   }
-  parse_class() {
+  parse_class(accept_anonymous) {
     this.expect("class");
 
     let name;
     if (this.current_token().type == "identifier") {
       name = this.expect("identifier").value;
-    } else name = "<anonymous>";
+    } else {
+      //Throw an error because we weren't accepting anonymous functions
+      if (!accept_anonymous) {
+        throw new Error(`Unexpected token ${parser.current_token().value}`);
+      }
+      name = "<anonymous>";
+    }
 
     this.expect("lbracket");
 
@@ -542,7 +554,7 @@ class Parser {
 }
 
 let tokens = lex(`
-function k(u = 15) {
+function asd(u = 15) {
   return u - 9 + (u == 4 ? 6 : 89);
 }
 `);
@@ -554,4 +566,4 @@ console.log(tokens);
 console.log(
   util.inspect(ast, { showHidden: false, depth: null, colors: true })
 );
-deep_log_ast(ast);
+// deep_log_ast(ast);

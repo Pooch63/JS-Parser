@@ -9,7 +9,6 @@ export function create_parse_expression(parser) {
   function parse_expression(bp, accept_empty = false) {
     let curr = parser.current_token();
     let nud = table[curr.type]?.nud;
-    console.log(curr);
     if (nud == null) {
       if (accept_empty) return null;
       throw new Error(`Unexpected token ${curr.value}`);
@@ -38,7 +37,7 @@ export function create_parse_expression(parser) {
     return {
       led: (left) => {
         parser.next_token();
-        return new nodes.BinOp(operator, left, parse_expression(lbp - 1));
+        return new nodes.BinOp(operator, left, parse_expression(lbp));
       },
       lbp,
     };
