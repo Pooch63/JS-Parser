@@ -256,7 +256,7 @@ export const nodes = {
 
   Assignment: class {
     /**
-     * @param {"=" |   ""} type
+     * @param {"=" | "+=" | "-=" | "*="...} type
      * @param {nodes.Identifier | nodes.Accessor} variable
      * @param {node} value
      */

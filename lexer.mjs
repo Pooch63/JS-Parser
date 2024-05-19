@@ -24,16 +24,43 @@ const symbols = {
   "]": "rsqbracket",
   "(": "lparen",
   ")": "rparen",
-  "=": "equals",
   ";": "semicolon",
   ",": "comma",
   ".": "dot",
 
-  "+": "plus",
-  "-": "minus",
   "*": "star",
   "/": "slash",
   "%": "percent",
+  "+": "plus",
+  "-": "minus",
+  "<<": "bit_left_shift",
+  ">>": "bit_right_shift",
+  "<": "less_than",
+  "<=": "less_than_or_eq",
+  ">": "greater_than",
+  ">=": "greater_than_or_eq",
+  "==": "eq_eq",
+  "===": "eq_eq_eq",
+  "!=": "bang_eq",
+  "!==": "bang_eq_eq",
+  "&": "bit_and",
+  "^": "bit_xor",
+  "|": "bit_or",
+  "&&": "logic_and",
+  "||": "logic_or",
+
+  "=": "equals",
+  "+=": "plus_eq",
+  "-=": "minus_eq",
+  "*=": "mul_eq",
+  "/=": "div_eq",
+  "%=": "mod_eq",
+  "&=": "bit_and_eq",
+  "|=": "bit_or_eq",
+  "^=": "bit_xor_eq",
+  "<<=": "bit_left_shift_eq",
+  ">>=": "bit_right_shift_eq",
+  ">>>=": "bit_unsigned_right_shift_eq",
 
   "--": "decrement",
   "++": "increment",
@@ -51,9 +78,21 @@ export function lex(source) {
     //Whitespace
     if (/\s/.test(char)) continue;
 
-    //Two char symbol
     let two = char + source[ind + 1];
-    if (symbols[two] != null) {
+    let three = two + source[ind + 2];
+    let four = three + source[ind + 3];
+    //Four char symbol
+    if (symbols[four] != null) {
+      tokens.push({ type: symbols[four], value: four });
+      ind += 3;
+    }
+    //Three char symbol
+    else if (symbols[three] != null) {
+      tokens.push({ type: symbols[three], value: three });
+      ind += 2;
+    }
+    //Two char symbol
+    else if (symbols[two] != null) {
       tokens.push({ type: symbols[two], value: two });
       ind += 1;
     }

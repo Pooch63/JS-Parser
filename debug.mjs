@@ -1,5 +1,5 @@
 import colors from "colors/safe.js";
-import { nodes } from "./parser.mjs";
+import { nodes } from "./ast.mjs";
 
 colors.setTheme({
   string: "green",

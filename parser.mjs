@@ -1,7 +1,8 @@
 import { lex } from "./lexer.mjs";
 import { deep_log_ast } from "./debug.mjs";
 import { nodes } from "./ast.mjs";
-import { create_table } from "./expression.mjs";
+import { create_parse_expression } from "./expression.mjs";
+import * as util from "util";
 
 class ParserScopeContext {
   constructor(async, in_class) {
@@ -65,7 +66,6 @@ class ParserContext {
 class Parser {
   tokens = [];
   token_ind = 0;
-  pratt_expression_table = create_table(this);
 
   constructor(tokens) {
     this.tokens = tokens;
@@ -517,8 +517,13 @@ class Parser {
 
     return chained;
   }
-  parse_expression() {
-    return new nodes.Number(this.expect("number").value);
+
+  parse_expression_func = create_parse_expression(this);
+  /**
+   * @param {bool} accept_empty
+   */
+  parse_expression(accept_empty) {
+    return this.parse_expression_func(0, accept_empty);
   }
 
   parse_block() {
@@ -537,17 +542,16 @@ class Parser {
 }
 
 let tokens = lex(`
-function p(u = 15) {
-  return 9;
+function k(u = 15) {
+  return u - 9 + (u == 4 ? 6 : 89);
 }
-if (213) {}else if (8) {} else  {} 
 `);
 let parser = new Parser(tokens);
 const ast = parser.parse();
 
-// console.log(tokens);
+console.log(tokens);
 
-// console.log(
-//   util.inspect(ast, { showHidden: false, depth: null, colors: true })
-// );
-// deep_log_ast(ast);
+console.log(
+  util.inspect(ast, { showHidden: false, depth: null, colors: true })
+);
+deep_log_ast(ast);
